@@ -9,7 +9,7 @@ class Laravel419HandlerServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigForm(__DIR__.'/../config/laravel419.php', 'laravel419');
+        $this->mergeConfigFrom(__DIR__.'/../config/laravel419.php', 'laravel419');
     }
 
     public function boot()
