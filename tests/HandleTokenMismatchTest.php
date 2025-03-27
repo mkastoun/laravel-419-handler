@@ -6,9 +6,12 @@ use Orchestra\Testbench\TestCase;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Route;
 use Laravel419Handler\Laravel419HandlerServiceProvider;
+use Laravel419Handler\Traits\HandlesTokenMismatch;
 
 class HandleTokenMismatchTest extends TestCase
 {
+    use HandlesTokenMismatch;
+
     protected function getPackageProviders($app)
     {
         return [Laravel419HandlerServiceProvider::class];

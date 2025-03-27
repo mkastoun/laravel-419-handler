@@ -17,7 +17,7 @@ composer require mkastoun/laravel-419-handler
 ## Publishing Config
 
 ```bash
-php artisan vendor:publish --tag=config
+php artisan vendor:publish --provider="Laravel419Handler\Laravel419HandlerServiceProvider" --tag=config
 ```
 
 ## Configuration (config/laravel419.php)
@@ -32,6 +32,27 @@ return [
         'status' => 419,
     ],
 ];
+```
+
+## How Users Should Use It
+file: App\Exceptions\Handler.php
+```php
+use Laravel419Handler\Traits\HandlesTokenMismatch;
+
+class Handler extends ExceptionHandler
+{
+    use HandlesTokenMismatch; // use this trait
+
+    public function render($request, Throwable $e)
+    {
+        // add this condition
+        if ($e instanceof \Illuminate\Session\TokenMismatchException) {
+            return $this->handleTokenMismatch($request, $e);
+        }
+
+        return parent::render($request, $e);
+    }
+}
 ```
 
 ## License

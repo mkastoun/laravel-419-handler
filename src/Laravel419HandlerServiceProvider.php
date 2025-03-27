@@ -14,12 +14,8 @@ class Laravel419HandlerServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // publish config
         $this->publishes([
-            __DIR__.'/../config/laravel419.php' => config_path('laravel419.php')
+            __DIR__.'/../config/laravel419.php' => config_path('laravel419.php'),
         ], 'config');
-
-        // Register middleware
-        $this->app['router']->pushMiddlewareToGroup('web', HandleTokenMismatchException::class);
     }
 }
