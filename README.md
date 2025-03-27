@@ -1,20 +1,30 @@
 # Laravel 419 Handler
 
-A simple Laravel package to gracefully handle 419 (Page Expired) errors with user-friendly redirects, flash messages, and API JSON responses.
+Gracefully handle `419 Page Expired` errors in Laravel using a clean, package-based trait that integrates into your `Handler.php`.
 
-## Features
-- Catch and redirect on TokenMismatch (CSRF) exceptions
-- Flash user-friendly messages
-- Return proper JSON error on API requests
-- Auto-refresh on back if needed
+---
 
-## Installation
+## ✨ Features
+
+- Handles `TokenMismatchException` (CSRF/session expiration)
+- Clean `trait`-based integration (no overriding core Laravel handlers)
+- Redirects with flash messages (web)
+- JSON error response (API)
+- Configurable behavior
+
+---
+
+## 📦 Installation
+
+Via Composer:
 
 ```bash
 composer require mkastoun/laravel-419-handler
 ```
 
-## Publishing Config
+---
+
+## ⚙️ Publish Configuration
 
 ```bash
 php artisan vendor:publish --provider="Laravel419Handler\Laravel419HandlerServiceProvider" --tag=config
@@ -34,19 +44,23 @@ return [
 ];
 ```
 
-## How Users Should Use It
-file: App\Exceptions\Handler.php
+## 🧩 Integration
+
+In your `App\Exceptions\Handler.php`:
+
+1. Import and use the trait:
+
 ```php
 use Laravel419Handler\Traits\HandlesTokenMismatch;
+use Illuminate\Session\TokenMismatchException;
 
 class Handler extends ExceptionHandler
 {
-    use HandlesTokenMismatch; // use this trait
+    use HandlesTokenMismatch;
 
     public function render($request, Throwable $e)
     {
-        // add this condition
-        if ($e instanceof \Illuminate\Session\TokenMismatchException) {
+        if ($e instanceof TokenMismatchException) {
             return $this->handleTokenMismatch($request, $e);
         }
 
@@ -55,5 +69,36 @@ class Handler extends ExceptionHandler
 }
 ```
 
-## License
+2. In your Blade layout, show the flash error (Optional):
+
+```blade
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+```
+
+## 🧪 Testing
+
+```bash
+composer test
+```
+
+---
+
+## 📄 License
+
 MIT
+
+---
+
+## 🤝 Contributing
+
+PRs welcome! Please submit issues, ideas, and improvements to help others benefit from this package.
+
+---
+
+## 🧠 Why Not Middleware?
+
+While catching 419s via middleware is sometimes possible, it’s not 100% reliable because `TokenMismatchException` is thrown **before** controller or middleware logic in some cases. Using a trait inside the exception handler guarantees full coverage — safely and cleanly.
