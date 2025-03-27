@@ -14,11 +14,12 @@ trait HandlesTokenMismatch
 
         session()->flash('error', config('laravel419.flash_message'));
 
+        // Decide where to redirect
         $redirectTo = url(config('laravel419.redirect_on_web', '/'));
         $backUrl = url()->previous();
 
         if ($backUrl && $backUrl !== $request->fullUrl()) {
-            return redirect($backUrl);
+            return redirect($backUrl)->with('refresh', config('laravel419.auto_refresh_on_back'));
         }
 
         return redirect($redirectTo);
